@@ -9275,3 +9275,12 @@ Entries:
   id: 100592
   time: '2026-11-26T10:17:48.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/824
+- author: Happyowl93
+  changes:
+    - type: Add
+      message: >-
+        Added Settlers of Colossus, a board game for 1-4 players. Buy the box at
+        the Wolfgate vendor.
+  id: 100593
+  time: '2026-11-26T13:32:35.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/842
