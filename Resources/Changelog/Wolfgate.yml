@@ -9326,3 +9326,10 @@ Entries:
   id: 100595
   time: '2026-11-26T18:13:34.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/855
+- author: AvText
+  changes:
+    - type: Tweak
+      message: Swapped stealth shaders from WG shaders back to default ss14 ones.
+  id: 100596
+  time: '2026-11-26T21:51:54.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/849
