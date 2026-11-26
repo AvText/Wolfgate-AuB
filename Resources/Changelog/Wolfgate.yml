@@ -9319,3 +9319,10 @@ Entries:
   id: 100594
   time: '2026-11-26T13:33:17.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/840
+- author: mnemosynium
+  changes:
+    - type: Fix
+      message: Let blood packs fill a hemophage's reserve
+  id: 100595
+  time: '2026-11-26T18:13:34.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/855
