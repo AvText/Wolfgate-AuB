@@ -9249,3 +9249,29 @@ Entries:
   id: 100591
   time: '2026-11-25T14:18:13.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/838
+- author: Happyowl93
+  changes:
+    - type: Add
+      message: >-
+        Ships now build heat. Shields turn absorbed damage into heat and firing
+        ship guns heats the hull; guns stop at 95% heat.
+    - type: Add
+      message: >-
+        Added a Vent heat button to the helm, generator and gunnery shield
+        panels. Venting drops the shield and silences guns while the ship cools
+        fast, and shows on radar.
+    - type: Tweak
+      message: A collapsed ship shield locks the ship's guns for 10 to 15 seconds.
+    - type: Tweak
+      message: >-
+        Raised ship shields reduce thrust and turning and make the ship easier
+        to detect.
+    - type: Tweak
+      message: >-
+        Ships can mount only one shield generator. Generator capacities and
+        recovery times were rebalanced.
+    - type: Tweak
+      message: Firing missiles adds no heat.
+  id: 100592
+  time: '2026-11-26T10:17:48.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/824
