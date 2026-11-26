@@ -9356,3 +9356,10 @@ Entries:
   id: 100597
   time: '2026-11-26T21:53:04.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/854
+- author: mnemosynium
+  changes:
+    - type: Add
+      message: Added luggage tug and trolleys to John Wolfgate's catalogue
+  id: 100598
+  time: '2026-11-26T21:53:33.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/856
