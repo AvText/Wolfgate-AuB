@@ -9284,3 +9284,38 @@ Entries:
   id: 100593
   time: '2026-11-26T13:32:35.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/842
+- author: DriftingSkies
+  changes:
+    - type: Add
+      message: >-
+        The Contracts PDA app is now a full contract board. Browse, accept and
+        abandon contracts from your PDA, and cargo is handed out at the nearest
+        board.
+    - type: Add
+      message: >-
+        Supply and mining contracts give a manifest parcel. Use goods on it, or
+        it on goods, a bag or an open crate, and it takes only what's still
+        needed.
+    - type: Add
+      message: 20 new faction board contracts, and faction boards post more offers.
+    - type: Add
+      message: >-
+        Planetside contracts are listed under Planetary as well as their own
+        category.
+    - type: Tweak
+      message: Non-mining contract pay is up 40%.
+    - type: Tweak
+      message: >-
+        Station job wages are doubled, except MMC, and no longer draw from
+        faction accounts.
+    - type: Fix
+      message: >-
+        Planetside contracts no longer fail to spawn or spawn objectives inside
+        rock.
+    - type: Fix
+      message: Space contract sites no longer spawn far beyond their listed distance.
+    - type: Fix
+      message: Replacement specialist kits can be bought once per kit per round.
+  id: 100594
+  time: '2026-11-26T13:33:17.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/840
