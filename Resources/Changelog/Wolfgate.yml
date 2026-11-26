@@ -9333,3 +9333,26 @@ Entries:
   id: 100596
   time: '2026-11-26T21:51:54.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/849
+- author: Happyowl93
+  changes:
+    - type: Tweak
+      message: >-
+        Laser guns fire faster and slowly recharge themselves when not firing.
+        TSF pulse rifle does a bit more damage.
+    - type: Tweak
+      message: Burns from heat weapons hurt more.
+    - type: Tweak
+      message: Mantis blades hit harder. A pair now outdamages an energy sword.
+    - type: Add
+      message: Press Q to retract an arm augment's blade or tool.
+    - type: Add
+      message: Talking in a vacuum only comes out as a whisper.
+    - type: Tweak
+      message: The hacking dart pierces shields on ships at half heat or more.
+    - type: Tweak
+      message: >-
+        The ARACHNE hacking harpoon and its darts are now sold in cargo instead
+        of the PDV and Underground vendors.
+  id: 100597
+  time: '2026-11-26T21:53:04.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/854
