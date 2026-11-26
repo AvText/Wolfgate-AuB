@@ -9363,3 +9363,12 @@ Entries:
   id: 100598
   time: '2026-11-26T21:53:33.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/856
+- author: Happyowl93
+  changes:
+    - type: Add
+      message: >-
+        Lost your ID? The shipyard dealer on Caelestinus can reissue it for a
+        small fee.
+  id: 100599
+  time: '2026-11-26T22:23:06.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/858
