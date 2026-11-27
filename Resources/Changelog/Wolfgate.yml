@@ -9381,3 +9381,10 @@ Entries:
   id: 100600
   time: '2026-11-27T00:44:15.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/861
+- author: MacaroniCritter
+  changes:
+    - type: Tweak
+      message: The VG Snake Eater has been reconfigured for better quality of life.
+  id: 100601
+  time: '2026-11-27T13:08:53.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/851
