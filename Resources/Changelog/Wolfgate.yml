@@ -9489,3 +9489,14 @@ Entries:
   id: 100606
   time: '2026-11-27T20:50:34.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/868
+- author: Balls2zawall
+  changes:
+    - type: Add
+      message: Added the MMC-GGS Tetsu-kuzu, a new drydock ship for the MMC.
+    - type: Fix
+      message: >-
+        Fixed the Dredgers author credits and lowered the price based on
+        re-appraisal.
+  id: 100607
+  time: '2026-11-27T23:12:11.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/870
