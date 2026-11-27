@@ -9372,3 +9372,12 @@ Entries:
   id: 100599
   time: '2026-11-26T22:23:06.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/858
+- author: Balls2zawall
+  changes:
+    - type: Fix
+      message: >-
+        The Nebula's shield generator was causing strange npc ship interactions,
+        it's been removed for now.
+  id: 100600
+  time: '2026-11-27T00:44:15.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/861
