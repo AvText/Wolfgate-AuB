@@ -9,6 +9,7 @@
   price: 244400 # appraised at 203695, roughly 20% markup
   category: Medium # 496 tiles
   group: Mieyo
+  access: Mieyo
   shuttlePath: /SharedMaps/_WG/Shipyard/Shuttles/Mieyo/tetsukuzu.yml
   guidebookPage: null
   class:
@@ -20,6 +21,7 @@
   id: WGTetsukuzu
   mapName: 'MMC-GGS Tetsu-kuzu'
   mapPath: /SharedMaps/_WG/Shipyard/Shuttles/Mieyo/tetsukuzu.yml
+  isGrid: true
   minPlayers: 0
   stations:
     WGTetsukuzu:
