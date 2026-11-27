@@ -52,9 +52,9 @@ for it and the Medical guide a player page.
 
 Selling at a cargo pallet is where the risk is (`WGNarcoticHeatSystem`). Each seller has a heat of their own: the street
 value they sold lately, cooling at `wg.narcotics.heat_cooling` a second and capped at `heat_cap`. A buyer pays in full up
-to `heat_free` and then less and less, down to `heat_floor` of the value (`WGNarcoticHeatMath.Payout`), so the most a
-seller earns at full price is the cooling rate and a stockpile sold at once, or held to the end of the round, fetches a
-fraction. The fall is gentle (`heat_scale`), so selling past the line still pays: what it costs is exposure. The line
+to `heat_free` and then less and less, down to `heat_floor` of the value, and only `heat_glut_floor` for what is sold
+past `heat_cap`, where the market is saturated (`WGNarcoticHeatMath.Payout`), so the most a seller earns at full price
+is the cooling rate and a stockpile sold at once, or held to the end of the round, fetches a small fraction. The fall is gentle (`heat_scale`), so selling past the line still pays: what it costs is exposure. The line
 itself is fuzzy: each seller's sits up to `heat_fuzz` of `heat_free` either side of it, holds through a visit and is
 drawn anew once they have kept from selling for `heat_fuzz_time`, so a load can't be sized to it beforehand. Heat follows the player, not the body, and nobody else's price moves. The console shows the cut price, and the
 buyer's manner (a popup only the seller sees, before and after a sale) tells them which tier they are in, and when
@@ -74,7 +74,10 @@ a contraband pallet narcotics hand in for a point per `turn_in_value` of the str
 (`WGNarcoticGoodsSystem.TurnIn`), with no flat reward, and the pallet takes every one it counted: seizing a stockpile
 pays the same in a tank or in baggies, and splitting one into doses earns nothing more. A point cashes for 2,000,
 which at 15,000 a point is about 13% of the value: under the `heat_floor` a dump sells for, so handing in never beats
-selling.
+selling. A shipyard pays nothing for narcotics aboard a hull it buys, nor for what holds them, a tank, a crate's
+baggies or a spill (`ShipyardSystem.Narcotics.cs`), so a stockpile can't be sold past the heat inside a ship.
+The Underground Black Market's pallets buy none at all: a grid with `WGRefusesNarcotics` (set by the POI) leaves
+anything holding narcotics, packed or not, on the pallet and sells the rest (`CargoSystem.Narcotics.cs`).
 
 Entry points: `WGDose` and `WGClearIntoxication` (entity effects), `SharedWGIntoxicationSystem` (levels, tiers,
 `IsNeurowareHost`), `WGIntoxicationSystem.Tick`, `WGDependenceSystem.Tick`, `WGDeliverySystem`,
@@ -102,6 +105,9 @@ which `Solution`'s add, split, transfer and remove methods keep in step. They co
 
 Dispensers give standard grade. Touch reactions, tile reactions and fuel ignore grades for now.
 
+`WGPurityTint` sets an appearance flag while one reagent is at or above a grade (99.1% by default); a crystal shard
+that good turns blue through a `GenericVisualizer`.
+
 ## Neuroware
 
 Drugs for synthetics. A body whose brain organ has `WGNeurowareHost` (the positronic brains) ignores chemical doses
@@ -127,8 +133,10 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 ### Server
 
 - [`Content.Server/_WG/WolfChem/Narcotics/BotanySystem.Narcotics.cs`](Narcotics/BotanySystem.Narcotics.cs)
+- [`Content.Server/_WG/WolfChem/Narcotics/CargoSystem.Narcotics.cs`](Narcotics/CargoSystem.Narcotics.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/HealthAnalyzerSystem.Narcotics.cs`](Narcotics/HealthAnalyzerSystem.Narcotics.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/MetabolizerSystem.Granular.cs`](Narcotics/MetabolizerSystem.Granular.cs)
+- [`Content.Server/_WG/WolfChem/Narcotics/ShipyardSystem.Narcotics.cs`](Narcotics/ShipyardSystem.Narcotics.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/WGAlcoholSystem.cs`](Narcotics/WGAlcoholSystem.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/WGAnalyzerConditionsSystem.cs`](Narcotics/WGAnalyzerConditionsSystem.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/WGDeliverySystem.cs`](Narcotics/WGDeliverySystem.cs)
@@ -149,6 +157,7 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.Server/_WG/WolfChem/Narcotics/WGNarcoticStockSystem.cs`](Narcotics/WGNarcoticStockSystem.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/WGNodSystem.cs`](Narcotics/WGNodSystem.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/WGPilotImpairmentComponent.cs`](Narcotics/WGPilotImpairmentComponent.cs)
+- [`Content.Server/_WG/WolfChem/Narcotics/WGRefusesNarcoticsComponent.cs`](Narcotics/WGRefusesNarcoticsComponent.cs)
 - [`Content.Server/_WG/WolfChem/Narcotics/WGSecondhandSmokeSystem.cs`](Narcotics/WGSecondhandSmokeSystem.cs)
 - [`Content.Server/_WG/WolfChem/Neuroware/WGNeurowareSystem.cs`](Neuroware/WGNeurowareSystem.cs)
 - [`Content.Server/_WG/WolfChem/Purity/BotanySystem.Purity.cs`](Purity/BotanySystem.Purity.cs)
@@ -158,6 +167,8 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.Server/_WG/WolfChem/Purity/WGPuritySystem.cs`](Purity/WGPuritySystem.cs)
 - [`Content.Server/_WG/WolfChem/Purity/WGPurityTesterComponent.cs`](Purity/WGPurityTesterComponent.cs)
 - [`Content.Server/_WG/WolfChem/Purity/WGPurityTesterSystem.cs`](Purity/WGPurityTesterSystem.cs)
+- [`Content.Server/_WG/WolfChem/Purity/WGPurityTintComponent.cs`](Purity/WGPurityTintComponent.cs)
+- [`Content.Server/_WG/WolfChem/Purity/WGPurityTintSystem.cs`](Purity/WGPurityTintSystem.cs)
 - [`Content.Server/_WG/WolfChem/Purity/WGSolutionPurityComponent.cs`](Purity/WGSolutionPurityComponent.cs)
 - [`Content.Server/_WG/WolfChem/Purity/WGSolutionPuritySystem.cs`](Purity/WGSolutionPuritySystem.cs)
 
@@ -182,6 +193,7 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.Shared/_WG/WolfChem/Purity/Solution.Purity.cs`](../../../Content.Shared/_WG/WolfChem/Purity/Solution.Purity.cs)
 - [`Content.Shared/_WG/WolfChem/Purity/WGPurityCVars.cs`](../../../Content.Shared/_WG/WolfChem/Purity/WGPurityCVars.cs)
 - [`Content.Shared/_WG/WolfChem/Purity/WGPurityText.cs`](../../../Content.Shared/_WG/WolfChem/Purity/WGPurityText.cs)
+- [`Content.Shared/_WG/WolfChem/Purity/WGPurityTintVisuals.cs`](../../../Content.Shared/_WG/WolfChem/Purity/WGPurityTintVisuals.cs)
 - [`Content.Shared/_WG/WolfChem/Purity/WGReactionPurityPrototype.cs`](../../../Content.Shared/_WG/WolfChem/Purity/WGReactionPurityPrototype.cs)
 
 ### Client
@@ -211,6 +223,7 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/IntoxicationTest.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/IntoxicationTest.cs)
 - [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticHandInTest.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticHandInTest.cs)
 - [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticHeatTest.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticHeatTest.cs)
+- [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticRefusalTest.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticRefusalTest.cs)
 - [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticTipPlanetTest.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NarcoticTipPlanetTest.cs)
 - [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NodTest.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/NodTest.cs)
 - [`Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/RadioProbeSystem.cs`](../../../Content.IntegrationTests/Tests/_WG/WolfChem/Narcotics/RadioProbeSystem.cs)
@@ -300,6 +313,7 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.Server/_NF/Contraband/Systems/ContrabandTurnInSystem.cs`](../../_NF/Contraband/Systems/ContrabandTurnInSystem.cs)
   - the street value of the narcotics handed in, summed over the pallets
   - narcotics hand in for what they hold together
+- [`Content.Server/_NF/Shipyard/Systems/ShipyardSystem.cs`](../../_NF/Shipyard/Systems/ShipyardSystem.cs): a hull sale pays nothing for narcotics, which sell at a pallet under heat
 - [`Content.Server/Body/Systems/MetabolizerSystem.cs`](../../Body/Systems/MetabolizerSystem.cs)
   - impurity damage
   - a rate below 0.01 u a tick builds up instead of rounding to nothing
@@ -312,6 +326,7 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.Server/Botany/Systems/BotanySystem.Produce.cs`](../../Botany/Systems/BotanySystem.Produce.cs)
   - narcotic produce is graded by potency
   - produce that grew a street drug is a narcotic
+- [`Content.Server/Cargo/Systems/CargoSystem.Shuttle.cs`](../../Cargo/Systems/CargoSystem.Shuttle.cs): a grid that refuses narcotics leaves them on the pallet
 - [`Content.Server/Cargo/Systems/PricingSystem.cs`](../../Cargo/Systems/PricingSystem.cs): a reagent is worth its grade
 - [`Content.Server/Chemistry/EntitySystems/ChemMasterSystem.cs`](../../Chemistry/EntitySystems/ChemMasterSystem.cs)
   - read before the removal prunes it
@@ -323,7 +338,9 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Content.Server/Medical/HealthAnalyzerSystem.cs`](../../Medical/HealthAnalyzerSystem.cs): drug levels, held effects and dependence
 - [`Content.Shared/_Onyx/Medical/HealthAnalyzerChemicalInfo.cs`](../../../Content.Shared/_Onyx/Medical/HealthAnalyzerChemicalInfo.cs): the reagent's grade
 - [`Content.Shared/Chemistry/Components/Solution.cs`](../../../Content.Shared/Chemistry/Components/Solution.cs)
+  - a handled state gets a copy, so prediction can't write into the cached server state
   - copy the grades
+  - a state's copy keeps the solution's name and reaction flag
   - a standard-grade addition dilutes a graded reagent
   - drop grades of reagents scaled away
   - drop grades of removed reagents
@@ -342,11 +359,13 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
   - grades of Reagents
   - grades of BufferReagents
 - [`Content.Shared/MedicalScanner/HealthAnalyzerScannedUserMessage.cs`](../../../Content.Shared/MedicalScanner/HealthAnalyzerScannedUserMessage.cs): drug levels, held effects and dependence
+- [`Resources/Locale/en-US/_Mono/reagents/narcotics.ftl`](../../../Resources/Locale/en-US/_Mono/reagents/narcotics.ftl): the crystal takes 25u since Monolith's fent buff, and leftover fent explodes
 - [`Resources/Prototypes/_EinsteinEngines/Entities/Mobs/Player/silicon_base.yml`](../../../Resources/Prototypes/_EinsteinEngines/Entities/Mobs/Player/silicon_base.yml): neuroware twins apply these to a synthetic's own body
 - [`Resources/Prototypes/_ES/Reagents/gases.yml`](../../../Resources/Prototypes/_ES/Reagents/gases.yml): thin haze from smoking is harmless; fire-thick smoke still chokes
 - [`Resources/Prototypes/_Impstation/Reagents/biological.yml`](../../../Resources/Prototypes/_Impstation/Reagents/biological.yml): held while it is in the blood instead of piling up each tick
 - [`Resources/Prototypes/_Mono/Catalogs/Fills/Lockers/salvmaint_locker.yml`](../../../Resources/Prototypes/_Mono/Catalogs/Fills/Lockers/salvmaint_locker.yml): neuroware sticks turn up in maintenance lockers
 - [`Resources/Prototypes/_Mono/Entities/Objects/Misc/solids.yml`](../../../Resources/Prototypes/_Mono/Entities/Objects/Misc/solids.yml): fits a baggie
+- [`Resources/Prototypes/_Mono/PointsOfInterest/underground.yml`](../../../Resources/Prototypes/_Mono/PointsOfInterest/underground.yml): the black market's pallets won't buy narcotics
 - [`Resources/Prototypes/_Mono/Reagents/letoferol.yml`](../../../Resources/Prototypes/_Mono/Reagents/letoferol.yml): drunkenness follows the units in the blood
 - [`Resources/Prototypes/_Mono/Reagents/medicine.yml`](../../../Resources/Prototypes/_Mono/Reagents/medicine.yml)
   - only in an overdose, like its jitter
@@ -356,11 +375,14 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
   - held while it is in the blood instead of piling up each tick
   - held at the units left, as long as it used to pile up to
   - drunkenness follows the units in the blood
+- [`Resources/Prototypes/_Mono/Recipes/Reactions/fentanyl.yml`](../../../Resources/Prototypes/_Mono/Recipes/Reactions/fentanyl.yml): under 25u it waits instead of eating the fentanyl for no crystal
+- [`Resources/Prototypes/_NF/Body/Organs/goblin_organs.yml`](../../../Resources/Prototypes/_NF/Body/Organs/goblin_organs.yml): at full rate the stomach cleared ethanol before it could make a goblin drunk
 - [`Resources/Prototypes/_NF/Entities/Objects/Specific/Hydroponics/leaves.yml`](../../../Resources/Prototypes/_NF/Entities/Objects/Specific/Hydroponics/leaves.yml): fits a baggie
 - [`Resources/Prototypes/_NF/Reagents/medicine.yml`](../../../Resources/Prototypes/_NF/Reagents/medicine.yml): held while it is in the blood instead of piling up each tick
 - [`Resources/Prototypes/_Onyx/Reagents/Medicine/medicine.yml`](../../../Resources/Prototypes/_Onyx/Reagents/Medicine/medicine.yml)
   - medical opioids build dependence slowly through the Opium profile
   - medical opioids build dependence slowly through the Heroin profile
+- [`Resources/Prototypes/Body/Organs/moth.yml`](../../../Resources/Prototypes/Body/Organs/moth.yml): at full rate the stomach cleared ethanol before it could make a moth drunk
 - [`Resources/Prototypes/Catalog/Fills/Crates/botany.yml`](../../../Resources/Prototypes/Catalog/Fills/Crates/botany.yml): drug crops come only from this crate and dealers
 - [`Resources/Prototypes/Entities/Markers/Spawners/Random/maintenance.yml`](../../../Resources/Prototypes/Entities/Markers/Spawners/Random/maintenance.yml): neuroware sticks turn up in maintenance
 - [`Resources/Prototypes/Entities/Markers/Spawners/Random/Salvage/tables_loot.yml`](../../../Resources/Prototypes/Entities/Markers/Spawners/Random/Salvage/tables_loot.yml): neuroware sticks turn up in salvage treasure
@@ -368,6 +390,7 @@ client partial of `WolfmedSyntheticHudOverlaySystem`. Sticks are in `Resources/P
 - [`Resources/Prototypes/Entities/Objects/Specific/Hydroponics/leaves.yml`](../../../Resources/Prototypes/Entities/Objects/Specific/Hydroponics/leaves.yml)
   - fits a baggie
   - fits a baggie and a bong bowl
+- [`Resources/Prototypes/Entities/Structures/Machines/chemistry.yml`](../../../Resources/Prototypes/Entities/Structures/Machines/chemistry.yml): cold enough for crystal shards and opium resin
 - [`Resources/Prototypes/Guidebook/medical.yml`](../../../Resources/Prototypes/Guidebook/medical.yml): drugs, grades and neuroware
 - [`Resources/Prototypes/Hydroponics/seeds.yml`](../../../Resources/Prototypes/Hydroponics/seeds.yml): the opium poppy is a poppy mutation
 - [`Resources/Prototypes/Reagents/cleaning.yml`](../../../Resources/Prototypes/Reagents/cleaning.yml)

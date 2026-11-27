@@ -454,6 +454,11 @@ public sealed partial class ChatUIController : UIController
             return;
         }
 
+        // WOLFGATE(SpeechBubbles) START: the player's speech bubble toggles
+        if (!WgShowSpeechBubble(ent, msg, speechType))
+            return;
+        // WOLFGATE END
+
         EnqueueSpeechBubble(ent, msg, speechType);
     }
 
@@ -878,6 +883,8 @@ public sealed partial class ChatUIController : UIController
     {
         if (_ent.EntitySysManager.TryGetEntitySystem<Content.Client._WG.Ghost.GhostOrbitSystem>(out var ghostOrbit)) // WOLFGATE(Ghost)
             ghostOrbit.AddChatLink(msg); // WOLFGATE(Ghost): orbit link for ghosts
+        if (_ent.EntitySysManager.TryGetEntitySystem<Content.Client._WG.Administration.AdminFollow.AdminFollowLinkSystem>(out var adminFollow)) // WOLFGATE(Administration)
+            adminFollow.AddChatLink(msg); // WOLFGATE(Administration): follow link on admin alerts about an entity
 
         // color the name unless it's something like "the old man"
         if ((msg.Channel == ChatChannel.Local || msg.Channel == ChatChannel.Whisper) && _chatNameColorsEnabled)
@@ -905,10 +912,12 @@ public sealed partial class ChatUIController : UIController
             }
         }
 
+        var wgBeforeHighlights = msg.WrappedMessage; // WOLFGATE(Notifications): tells whether a highlight matched
         foreach (var highlight in _highlights)
         {
             msg.WrappedMessage = SharedChatSystem.InjectTagAroundString(msg, highlight, "color", _highlightsColor);
         }
+        WgOnHighlights(msg, wgBeforeHighlights); // WOLFGATE(Notifications): sound and window flash on a highlight
 
         // Log all incoming chat to repopulate when filter is un-toggled
         if (!msg.HideChat)

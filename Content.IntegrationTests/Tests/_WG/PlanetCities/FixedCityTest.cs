@@ -15,7 +15,7 @@ using Content.Server._WG.Planets.Bounds;
 using Content.Server.NPC.HTN;
 using Content.Server.Spawners.Components;
 using Content.Server.Parallax;
-using Content.Server.Station.Systems;
+using Content.Server.Station.Components;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared._CE.ZLevels.Core.Components;
 using Content.Shared._WG.Caverns;
@@ -210,14 +210,13 @@ public sealed class FixedCityTest
             Assert.That(turrets, Is.GreaterThan(0), "Crocus lost its base turrets.");
             Assert.That(vendors, Is.GreaterThan(0), "Crocus lost its faction vendors.");
 
-            // The station covers the city and offers its jobs.
+            // The station covers the city but isn't joinable.
             var station = entMan.GetComponent<WGPlanetCitiesComponent>(ground).Stations.Single();
             var stationGrids = entMan.GetComponent<StationDataComponent>(station).Grids;
             Assert.That(stationGrids, Does.Contain(ground));
             Assert.That(entMan.GetComponent<MetaDataComponent>(ground).EntityName, Does.Not.Contain("Jianghui"), "The station renamed the world.");
             Assert.That(stationGrids, Does.Contain(underground));
-            var jobs = server.System<StationJobsSystem>();
-            Assert.That(jobs.TryGetJobSlot(station, "CrocusDockworker", out _), Is.True, "Crocus's jobs are not open.");
+            Assert.That(entMan.HasComponent<StationJobsComponent>(station), Is.False, "Crocus is on the join list.");
             Assert.That(entMan.HasComponent<Content.Server._CE.ZLevels.Core.Components.CEStationZLevelsComponent>(station), Is.False,
                 "The station would load Crocus's levels a second time.");
         });
@@ -242,16 +241,30 @@ public sealed class FixedCityTest
 
         // Zombies, all of them indoors and upstairs too, whatever the round would have rolled. Nobody walks off their tile.
         const string zombie = "WGWreckZombieVerda";
-        var (layers, _, holds) = await BuildCrocus(pair, false, () =>
+        // The prototype is shared by every later test on this pooled server, so it is put back however this one ends.
+        var crocus = prototypes.Index<WGFixedCityPrototype>("WGCityCrocus");
+        var originalFates = crocus.Fates;
+        var zombieFate = originalFates.Single(fate => fate.Name == "zombies");
+        var original = (zombieFate.IndoorShare, zombieFate.UpperLevels, zombieFate.MinGroups, zombieFate.MaxGroups);
+        List<EntityUid> layers;
+        List<Task> holds;
+        try
         {
-            server.CfgMan.SetCVar(CCVars.NPCEnabled, false);
-            var city = prototypes.Index<WGFixedCityPrototype>("WGCityCrocus");
-            var fate = city.Fates.Single(fate => fate.Name == "zombies");
-            fate.IndoorShare = 1f;
-            fate.UpperLevels = true;
-            fate.MinGroups = fate.MaxGroups = 12;
-            city.Fates = new List<WGCityFate> { fate };
-        });
+            (layers, _, holds) = await BuildCrocus(pair, false, () =>
+            {
+                server.CfgMan.SetCVar(CCVars.NPCEnabled, false);
+                zombieFate.IndoorShare = 1f;
+                zombieFate.UpperLevels = true;
+                zombieFate.MinGroups = zombieFate.MaxGroups = 12;
+                crocus.Fates = new List<WGCityFate> { zombieFate };
+            });
+        }
+        finally
+        {
+            // Fates are only read while the city generates, which BuildCrocus waits out.
+            (zombieFate.IndoorShare, zombieFate.UpperLevels, zombieFate.MinGroups, zombieFate.MaxGroups) = original;
+            crocus.Fates = originalFates;
+        }
 
         await server.WaitAssertion(() =>
         {

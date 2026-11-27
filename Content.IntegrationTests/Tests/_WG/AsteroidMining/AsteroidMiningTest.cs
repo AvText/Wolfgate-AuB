@@ -80,13 +80,14 @@ public sealed class AsteroidMiningTest
         return rocks;
     }
 
-    private static List<EntityUid> Boulders(IEntityManager em)
+    /// <summary>Boulders, on one map only, given one.</summary>
+    private static List<EntityUid> Boulders(IEntityManager em, MapId? map = null)
     {
         var boulders = new List<EntityUid>();
-        var query = em.EntityQueryEnumerator<WGAsteroidComponent, MetaDataComponent>();
-        while (query.MoveNext(out var uid, out _, out var meta))
+        var query = em.EntityQueryEnumerator<WGAsteroidComponent, MetaDataComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var meta, out var xform))
         {
-            if (meta.EntityPrototype?.ID == "WGAsteroidBoulder")
+            if (meta.EntityPrototype?.ID == "WGAsteroidBoulder" && (map == null || xform.MapID == map))
                 boulders.Add(uid);
         }
 
@@ -106,14 +107,15 @@ public sealed class AsteroidMiningTest
         return names;
     }
 
-    private static int OreItems(IEntityManager em)
+    /// <summary>Items tagged as ore, on one map only, given one.</summary>
+    private static int OreItems(IEntityManager em, MapId? map = null)
     {
         var tags = em.System<TagSystem>();
         var count = 0;
-        var query = em.EntityQueryEnumerator<TagComponent>();
-        while (query.MoveNext(out var uid, out _))
+        var query = em.EntityQueryEnumerator<TagComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
         {
-            if (tags.HasTag(uid, "Ore"))
+            if (tags.HasTag(uid, "Ore") && (map == null || xform.MapID == map))
                 count++;
         }
 
@@ -152,6 +154,12 @@ public sealed class AsteroidMiningTest
                 Assert.That(comp.Ores.Sum(o => o.Fraction), Is.LessThan(1f), "Part of the rock should be inert.");
             });
 
+            // A rock that rolls artifact fragments as its only ore drops nothing tagged as ore, so fix what it holds.
+            comp.Ores = new List<WGAsteroidOre>
+            {
+                new("NFOreSteel", 0.4f, Color.Brown, 0f),
+                new("NFOreCoal", 0.2f, Color.DarkGray, 0f),
+            };
             passenger = em.SpawnEntity("Crowbar", new EntityCoordinates(grid, 4.5f, 0.5f));
             comp.BaseCharge = 0.5f;
             asteroids.QueueCrack(rock, WGAsteroidCrack.Clean);
@@ -163,7 +171,7 @@ public sealed class AsteroidMiningTest
         {
             var fragments = GridRocks(em, map.MapId);
             Assert.That(em.Deleted(passenger), Is.False, "Things left on a cracked asteroid should stay behind in space.");
-            var boulders = Boulders(em);
+            var boulders = Boulders(em, map.MapId);
             Assert.Multiple(() =>
             {
                 Assert.That(em.Deleted(grid), Is.True, "Cracking should remove the rock's grid.");
@@ -173,7 +181,7 @@ public sealed class AsteroidMiningTest
                 Assert.That(fragments.All(f => f.Ores.Count > 0), Is.True, "Fragments should keep the parent's ores.");
                 Assert.That(fragments.All(f => f.BaseCharge > 0f), Is.True, "Fragments should come off hot.");
                 Assert.That(boulders, Is.Not.Empty, "Part of the dropped ore should come out as boulders.");
-                Assert.That(OreItems(em), Is.GreaterThan(0), "The rest of the mass should drop as ore.");
+                Assert.That(OreItems(em, map.MapId), Is.GreaterThan(0), "The rest of the mass should drop as ore.");
             });
         });
 
@@ -752,6 +760,12 @@ public sealed class AsteroidMiningTest
         comp.Instability = 0f;
         comp.WindowCenter = 0.55f;
         comp.WindowHalfWidth = 0.12f;
+        // A rock that rolls artifact fragments as its only ore drops nothing tagged as ore, so fix what it holds.
+        comp.Ores = new List<WGAsteroidOre>
+        {
+            new("NFOreSteel", 0.4f, Color.Brown, 0f),
+            new("NFOreCoal", 0.2f, Color.DarkGray, 0f),
+        };
         return (gun, rock);
     }
 
@@ -845,7 +859,7 @@ public sealed class AsteroidMiningTest
             Assert.Multiple(() =>
             {
                 Assert.That(em.Deleted(rock), Is.True, "Heat held in the window should crack the rock.");
-                Assert.That(OreItems(em), Is.GreaterThan(0), "A small rock should crack straight into ore.");
+                Assert.That(OreItems(em, map.MapId), Is.GreaterThan(0), "A small rock should crack straight into ore.");
                 Assert.That(em.GetComponent<WGMiningBeamEmitterComponent>(gun).Active, Is.False,
                     "The beam should go out once the gun stops firing.");
             });

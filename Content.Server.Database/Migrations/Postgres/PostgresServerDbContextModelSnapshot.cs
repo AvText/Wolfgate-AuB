@@ -1073,6 +1073,11 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("integer")
                         .HasColumnName("leg_stance");
 
+                    b.Property<string>("MarkingGlow")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("marking_glow");
+
                     b.Property<JsonDocument>("Markings")
                         .HasColumnType("jsonb")
                         .HasColumnName("markings");
@@ -2378,6 +2383,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("uuid")
                         .HasColumnName("player_user_id");
 
+                    b.Property<int?>("Slot")
+                        .HasColumnType("integer")
+                        .HasColumnName("slot");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -2410,6 +2419,10 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Property<byte[]>("FrameTimes")
                         .HasColumnType("bytea")
                         .HasColumnName("frame_times");
+
+                    b.Property<byte[]>("Glow")
+                        .HasColumnType("bytea")
+                        .HasColumnName("glow");
 
                     b.Property<byte[]>("Png")
                         .IsRequired()
@@ -2621,6 +2634,60 @@ namespace Content.Server.Database.Migrations.Postgres
                         .IsUnique();
 
                     b.ToTable("wolfgate_nano_chat_number", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.WolfgatePainting", b =>
+                {
+                    b.Property<string>("Hash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("hash");
+
+                    b.Property<string>("Artist")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("artist");
+
+                    b.Property<Guid?>("AuthorUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("author_user_id");
+
+                    b.Property<bool>("Blocked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("blocked");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer")
+                        .HasColumnName("height");
+
+                    b.Property<byte[]>("Pixels")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("pixels");
+
+                    b.Property<Guid>("ScannedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("scanned_by_user_id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer")
+                        .HasColumnName("width");
+
+                    b.HasKey("Hash")
+                        .HasName("PK_wolfgate_painting");
+
+                    b.ToTable("wolfgate_painting", (string)null);
                 });
 
             modelBuilder.Entity("Content.Server.Database.WolfgatePhoto", b =>
