@@ -9388,3 +9388,14 @@ Entries:
   id: 100601
   time: '2026-11-27T13:08:53.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/851
+- author: antanananat
+  changes:
+    - type: Fix
+      message: Added missing vacuum fix markers to VOX Vrikaash and VOX Srashakri
+    - type: Fix
+      message: >-
+        VOX Vrikaash and VOX Srashakri should no longer have you spawn outside
+        of your ship in the Crew start
+  id: 100602
+  time: '2026-11-27T13:09:38.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/859
