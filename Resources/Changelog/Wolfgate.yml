@@ -9472,3 +9472,20 @@ Entries:
   id: 100605
   time: '2026-11-27T20:50:17.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/869
+- author: Happyowl93
+  changes:
+    - type: Fix
+      message: >-
+        Reloading a revolver, such as the Wayward HCLM, no longer crashes your
+        game.
+    - type: Tweak
+      message: >-
+        The Underground Black Market no longer buys narcotics; they stay on the
+        pallet.
+    - type: Fix
+      message: >-
+        Judges and the Overseer always have the Bench app on their PDA,
+        including a reprinted one.
+  id: 100606
+  time: '2026-11-27T20:50:34.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/868
