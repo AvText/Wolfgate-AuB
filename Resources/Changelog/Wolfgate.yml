@@ -9399,3 +9399,39 @@ Entries:
   id: 100602
   time: '2026-11-27T13:09:38.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/859
+- author: ImogenOC
+  changes:
+    - type: Fix
+      message: >-
+        the site grid is freshly loaded in `Arrive`, so everything on it joins
+        the guard faction without the tick filter. `AddMapGuards` drops the
+        filter at arrival too. It keeps it for the later spawner scan, where
+        spawned entities still carry their real tick.
+    - type: Fix
+      message: >-
+        `Update` gathers the awake Remade first, then lets them act. `NearMiss`
+        does the same with its own list, because a reaction can fire a gun and
+        land back in `NearMiss`, inside `Update`.
+    - type: Fix
+      message: '`StartLeviathan` replaces a visit already under way.'
+    - type: Fix
+      message: >-
+        `SetUpBeam` pins the rock's ores the same way, and the assert counts ore
+        on the test's own map.
+    - type: Fix
+      message: >-
+        `WgSpawnPipe` (`NuclearReactorSystem.WGPipes.cs`,
+        `TurbineSystem.WGPipes.cs` in `_WG/Power`) parents the pipes to the
+        machine's own grid, with the same position and rotation.
+    - type: Fix
+      message: >-
+        The vault turrets on Convoy Raid, Forward Base, Supply Drop and Black
+        Site sites fight for the site instead of shooting its guards, so those
+        sites no longer clear themselves.
+    - type: Fix
+      message: >-
+        A reactor or turbine on a ship landed or crashed on a world no longer
+        unanchors itself.
+  id: 100603
+  time: '2026-11-27T17:30:17.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/865
