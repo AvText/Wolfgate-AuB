@@ -9435,3 +9435,24 @@ Entries:
   id: 100603
   time: '2026-11-27T17:30:17.0000000+00:00'
   url: https://github.com/VanguardControl/Wolfgate/pull/865
+- author: DriftingSkies
+  changes:
+    - type: Tweak
+      message: >-
+        Safety deposit boxes hold three times as much, and medium and large
+        boxes fit suits and armour vests.
+    - type: Add
+      message: >-
+        Safety deposit boxes now take thalers and tier 1 faction suits. Suits go
+        in empty, keeping only their helmet.
+    - type: Add
+      message: Move money between your bank and savings at any ATM.
+    - type: Add
+      message: >-
+        Savings earn 2% interest each round you play at least 30 minutes and
+        survive, up to $200,000 a round.
+    - type: Tweak
+      message: Purchases that can use savings now spend your bank first.
+  id: 100604
+  time: '2026-11-27T17:38:53.0000000+00:00'
+  url: https://github.com/VanguardControl/Wolfgate/pull/841
